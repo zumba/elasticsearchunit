@@ -1,11 +1,10 @@
 ElasticSearchUnit is a PHPUnit extension for test cases that utilize the official ElasticSearch Client as their data source.
 
-
 ## Requirements
 
-* PHP 5.4+
+* PHP 5.3+
 * PHPUnit ~3.7, ~4.0
-* ElasticSearch 1.0+
+* ElasticSearch ~1.0
 
 ## Testing
 
@@ -48,8 +47,8 @@ class MyElasticSearchTestCase extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function testRead() {
-		//$result = $this->getElasticSearchConnection()->test->some_collection->findOne(['name' => 'Document 2']);
-		$this->assertEquals('Document 2', $result['name']);
+		$result = $this->getElasticSearchConnection()->search(['index' => 'some_index']);
+		$this->assertEquals(2, $result['hits']['total']);
 	}
 
 }
