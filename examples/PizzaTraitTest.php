@@ -12,7 +12,7 @@ class PizzaTraitTest extends \PHPUnit_Framework_TestCase {
 
 	protected $fixture = [
 		'store' => [
-			'orders' => [
+			'items' => [
 				['size' => 'large', 'toppings' => ['cheese', 'ham']],
 				['size' => 'medium', 'toppings' => ['cheese']]
 			]
