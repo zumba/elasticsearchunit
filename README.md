@@ -2,8 +2,8 @@ ElasticSearchUnit is a PHPUnit extension for test cases that utilize the officia
 
 ## Requirements
 
-* PHP 5.3+
-* PHPUnit ~3.7, ~4.0
+* PHP 5.4+
+* PHPUnit ~4.0
 * ElasticSearch ~1.0
 
 ## Testing
@@ -24,8 +24,11 @@ class MyElasticSearchTestCase extends \PHPUnit_Framework_TestCase {
 	 *
 	 * @return Zumba\PHPUnit\Extensions\ElasticSearch\Client\Connector
 	 */
-	public function getElasticSearchConnection() {
-		return new \Elasticsearch\Client();
+	public function getElasticSearchConnector() {
+		if (empty($this->connection)) {
+			$this->connection = new \Zumba\PHPUnit\Extensions\ElasticSearch\Client\Connector(new \Elasticsearch\Client());
+		}
+		return $this->connection;
 	}
 
 	/**
@@ -34,7 +37,7 @@ class MyElasticSearchTestCase extends \PHPUnit_Framework_TestCase {
 	 * @return Zumba\PHPUnit\Extensions\ElasticSearch\DataSet\DataSet
 	 */
 	public function getElasticSearchDataSet() {
-		$dataset = new \Zumba\PHPUnit\Extensions\ElasticSearch\DataSet\DataSet($this->getElasticSearchConnection());
+		$dataset = new \Zumba\PHPUnit\Extensions\ElasticSearch\DataSet\DataSet($this->getElasticSearchConnector());
 		$dataset->setFixture([
 			'some_index' => [
 				'some_type' => [
@@ -47,7 +50,7 @@ class MyElasticSearchTestCase extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function testRead() {
-		$result = $this->getElasticSearchConnection()->search(['index' => 'some_index']);
+		$result = $this->getElasticSearchConnector()->getConnection()->search(['index' => 'some_index']);
 		$this->assertEquals(2, $result['hits']['total']);
 	}
 
@@ -56,8 +59,6 @@ class MyElasticSearchTestCase extends \PHPUnit_Framework_TestCase {
 
 [See full working example.](https://github.com/zumba/elasticsearchunit/blob/master/examples/PizzaTraitTest.php)
 
-## Note about PHP and PHPUnit Versions
+## Note about PHPUnit Versions
 
-PHP 5.3 is supported for PHPUnit ~3.7 by way of extending `\Zumba\PHPUnit\Extensions\ElasticSearch\TestCase`. PHPUnit 4 is working with this testcase, however it is not actively supported.
-
-PHP 5.4 is supported via use of the `\Zumba\PHPUnit\Extensions\ElasticSearch\TestTrait` trait. It currently is supporting PHPUnit 4 `@before` and `@after` but can be used in PHPUnit ~3.7 by either aliasing the `elasticSearchSetUp` and `elasticSearchTearDown` to `setUp` and `tearDown`, or by calling `elasticSearchSetUp` and `elasticSearchTearDown` in your respective methods.
+It currently is supporting PHPUnit 4 `@before` and `@after` but can be used in PHPUnit ~3.7 by either aliasing the `elasticSearchSetUp` and `elasticSearchTearDown` to `setUp` and `tearDown`, or by calling `elasticSearchSetUp` and `elasticSearchTearDown` in your respective methods.
