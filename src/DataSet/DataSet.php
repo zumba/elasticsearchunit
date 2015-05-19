@@ -6,6 +6,11 @@ use \Zumba\PHPUnit\Extensions\ElasticSearch\Client\Connector;
 class DataSet {
 
 	/**
+	 * Max retries / waiting time for indexing
+	 */
+	const MAX_RETRY = 30;
+
+	/**
 	 * Fixture data.
 	 *
 	 * [index name] => [type name] => [][data]
@@ -95,12 +100,17 @@ class DataSet {
 		//ensure that data has been indexed before you can use it
 		if (!empty($verify)) {
 			foreach ($verify as $index => $count) {
+				$retries = 1;
 				do {
+					if ($retries == static::MAX_RETRY) {
+						throw new \RuntimeException("Indexing time out for Elastic Search Fixture");
+					}
 					$response = $this->connection->getConnection()->indices()->status(compact('index'));
 					if (!isset($response['indices'][$index]['docs']['num_docs'])) {
 						break;
 					}
-					usleep(1000);
+					$retries++;
+					usleep(100000);
 				} while ($response['indices'][$index]['docs']['num_docs'] != $count);
 			}
 		}
