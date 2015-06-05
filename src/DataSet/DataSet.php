@@ -20,6 +20,15 @@ class DataSet {
 	protected $fixture = array();
 
 	/**
+	 * Mappings
+	 *
+	 * [index_name] => [type name] => [mappings]
+	 *
+	 * @var array
+	 */
+	protected $mappings = array();
+
+	/**
 	 * Connection object.
 	 *
 	 * @var Zumba\PHPUnit\Extensions\ElasticSearch\Client\Connector
@@ -49,6 +58,17 @@ class DataSet {
 	}
 
 	/**
+	 * Sets up the fixture mappings
+	 *
+	 * @param array $mappings
+	 * @return Zumba\PHPUnit\Extensions\ElasticSearch\DataSet\DataSet
+	 */
+	public function setMappings(array $mappings) {
+		$this->mappings = $mappings;
+		return $this;
+	}
+
+	/**
 	 * Delete all indices specified in the fixture keys.
 	 *
 	 * @return Zumba\PHPUnit\Extensions\ElasticSearch\DataSet\DataSet
@@ -70,6 +90,15 @@ class DataSet {
 	public function buildIndices() {
 		$verify = [];
 		foreach ($this->fixture as $index => $types) {
+
+			if (!$this->connection->getConnection()->indices()->exists(compact('index'))) {
+				$this->connection->getConnection()->indices()->create(compact('index'));
+			}
+			if (!empty($this->mappings[$index])) {
+				$this->defineMappings($index);
+			}
+
+			$documents[$index] = $this->getDocumentCount($index);
 			foreach ($types as $type => $data) {
 				if (empty($data)) {
 					continue;
@@ -96,10 +125,12 @@ class DataSet {
 				}
 			}
 		}
-
 		//ensure that data has been indexed before you can use it
 		if (!empty($verify)) {
 			foreach ($verify as $index => $count) {
+				if (empty($count)) {
+					continue;
+				}
 				$retries = 1;
 				do {
 					if ($retries == static::MAX_RETRY) {
@@ -111,11 +142,86 @@ class DataSet {
 					}
 					$retries++;
 					usleep(100000);
-				} while ($response['indices'][$index]['docs']['num_docs'] != $count);
+				} while ($response['indices'][$index]['docs']['num_docs'] != $documents[$index]);
 			}
 		}
 
 		return $this;
 	}
 
+	/**
+	 * Add mappings to the index
+	 *
+	 * @param string $index
+	 * @return void
+	 */
+	protected function defineMappings($index) {
+		foreach ($this->mappings[$index] as $type => $mappings) {
+			$params = [
+				'index' => $index,
+				'type' => $type
+			];
+
+			if ($this->connection->getConnection()->indices()->existsType($params)) {
+				$this->connection->getConnection()->indices()->deleteMapping($params);
+			}
+			if (empty($mappings)) {
+				continue;
+			}
+			$params['body'][$type] = (array)$mappings;
+			$this->connection->getConnection()->indices()->putMapping($params);
+		}
+	}
+
+	/**
+	 * Get the document count for an index
+	 *
+	 * @param string $index
+	 * @return integer
+	 */
+	protected function getDocumentCount($index) {
+		if (empty($this->fixture[$index])) {
+			return 0;
+		}
+		$documents = 0;
+		foreach ($this->fixture[$index] as $type => $records) {
+			$documents += count($records);
+			if (empty($this->mappings[$index][$type])) {
+				continue;
+			}
+			foreach ($records as $record) {
+				$documents += $this->getDocumentNestedCount($this->mappings[$index][$type], $record);
+			}
+		}
+		return $documents;
+	}
+
+	/**
+	 * Get the document count for an index
+	 *
+	 * @param array $mappings
+	 * @param array $records
+	 * @return integer
+	 */
+	protected function getDocumentNestedCount(array $mappings, array $records) {
+		if (empty($records)) {
+			return 0;
+		}
+		$documents = 0;
+		foreach ($mappings['properties'] as $key => $properties) {
+			if (empty($properties['type']) || $properties['type'] !== 'nested') {
+				continue;
+			}
+			$documents += count($records[$key]);
+			if (!empty($properties['properties'])) {
+				foreach ($records[$key] as $record) {
+					if (!is_array($record)) {
+						continue;
+					}
+					$documents += $this->getDocumentNestedCount($properties, $record);
+				}
+			}
+		}
+		return $documents;
+	}
 }
