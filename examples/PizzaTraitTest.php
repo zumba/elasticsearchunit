@@ -17,7 +17,7 @@ class PizzaTraitTest extends \PHPUnit_Framework_TestCase {
 				['size' => 'medium', 'toppings' => ['cheese']]
 			],
 			'toppings' => [
-								[
+				[
 					'name' => 'bacon',
 					'cost' => '0.75',
 					'categories' => [
