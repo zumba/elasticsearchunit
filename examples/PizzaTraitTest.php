@@ -60,6 +60,7 @@ class PizzaTraitTest extends \PHPUnit_Framework_TestCase {
 					'cost' => ['type' => 'float'],
 					'categories' => [
 						'type' => 'nested',
+						'include_in_parent' => true,
 						'properties' => [
 							'display_order' => ['type' => 'integer'],
 						]
