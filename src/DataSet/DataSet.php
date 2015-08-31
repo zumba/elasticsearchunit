@@ -29,6 +29,15 @@ class DataSet {
 	protected $mappings = array();
 
 	/**
+	 * Settings
+	 *
+	 * [index_name] => [settings]
+	 *
+	 * @var array
+	 */
+	public $settings = array();
+
+	/**
 	 * Connection object.
 	 *
 	 * @var Zumba\PHPUnit\Extensions\ElasticSearch\Client\Connector
@@ -69,6 +78,17 @@ class DataSet {
 	}
 
 	/**
+	 * Sets up the fixture settings
+	 *
+	 * @param array $settings
+	 * @return Zumba\PHPUnit\Extensions\ElasticSearch\DataSet\DataSet
+	 */
+	public function setSettings(array $settings) {
+		$this->settings = $settings;
+		return $this;
+	}
+
+	/**
 	 * Delete all indices specified in the fixture keys.
 	 *
 	 * @return Zumba\PHPUnit\Extensions\ElasticSearch\DataSet\DataSet
@@ -93,6 +113,9 @@ class DataSet {
 
 			if (!$this->connection->getConnection()->indices()->exists(compact('index'))) {
 				$this->connection->getConnection()->indices()->create(compact('index'));
+			}
+			if (!empty($this->settings[$index])) {
+				$this->defineSettings($index);
 			}
 			if (!empty($this->mappings[$index])) {
 				$this->defineMappings($index);
@@ -147,6 +170,24 @@ class DataSet {
 		}
 
 		return $this;
+	}
+
+	/**
+	 * Add settings to the index
+	 *
+	 * @param string $index
+	 * @return void
+	 */
+	public function defineSettings($index) {
+		if (empty($this->settings[$index])) {
+			return;
+		}
+		$params = ['index' => $index];
+
+		$this->connection->getConnection()->cluster()->health($params + ['wait_for_status' => 'yellow']);
+		$this->connection->getConnection()->indices()->close($params);
+		$this->connection->getConnection()->indices()->putSettings($params + ['body' => ['settings' => $this->settings[$index]]]);
+		$this->connection->getConnection()->indices()->open($params);
 	}
 
 	/**
