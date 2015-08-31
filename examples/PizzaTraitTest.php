@@ -6,12 +6,14 @@
 class PizzaTraitTest extends \PHPUnit_Framework_TestCase {
 	use \Zumba\PHPUnit\Extensions\ElasticSearch\TestTrait;
 
+	const PIZZA_TRAIT_INDEX = 'store';
+
 	protected $connection;
 
-	protected $dataset;
+	protected $dataSet;
 
 	protected $fixture = [
-		'store' => [
+		self::PIZZA_TRAIT_INDEX => [
 			'items' => [
 				['size' => 'large', 'toppings' => ['cheese', 'ham']],
 				['size' => 'medium', 'toppings' => ['cheese']]
@@ -51,16 +53,42 @@ class PizzaTraitTest extends \PHPUnit_Framework_TestCase {
 	];
 
 	protected $mappings = [
-		'store' => [
+		self::PIZZA_TRAIT_INDEX => [
 			'items' => [],
 			'toppings' => [
 				'properties' => [
 					'cost' => ['type' => 'float'],
 					'categories' => [
 						'type' => 'nested',
+						'include_in_parent' => true,
 						'properties' => [
 							'display_order' => ['type' => 'integer'],
 						]
+					]
+				]
+			]
+		]
+	];
+
+	protected $settings = [
+		self::PIZZA_TRAIT_INDEX => [
+			'analysis' => [
+				'analyzer' => [
+					'AutoCompleteAnalyzer' => [
+						'type' => 'custom',
+						'tokenizer' => 'AutoCompleteTokenizer',
+						'filter' => [
+							'lowercase',
+							'asciifolding',
+						]
+					],
+				],
+				'tokenizer' => [
+					'AutoCompleteTokenizer' => [
+						'type' => 'edgeNGram',
+						'min_gram' => 2,
+						'max_gram' => 20,
+						'token_chars' => ['letter', 'digit', 'punctuation', 'symbol', 'whitespace']
 					]
 				]
 			]
@@ -78,12 +106,14 @@ class PizzaTraitTest extends \PHPUnit_Framework_TestCase {
 		if (empty($this->dataSet)) {
 			$this->dataSet = new \Zumba\PHPUnit\Extensions\ElasticSearch\DataSet\DataSet($this->getElasticSearchConnector());
 			$this->dataSet->setFixture($this->fixture);
+			$this->dataSet->setMappings($this->mappings);
+			$this->dataSet->setSettings($this->settings);
 		}
 		return $this->dataSet;
 	}
 
 	public function testSizesFromFixture() {
-		$params = ['index' => 'store', 'type' => 'items'];
+		$params = ['index' => static::PIZZA_TRAIT_INDEX, 'type' => 'items'];
 		$this->assertEquals(2, $this->getElasticSearchConnector()->getConnection()->search($params)['hits']['total']);
 		$params['body'] = [
 			'query' => [
@@ -97,7 +127,7 @@ class PizzaTraitTest extends \PHPUnit_Framework_TestCase {
 
 	public function testNestedSearchSort() {
 		$params = [
-			'index' => 'store',
+			'index' => static::PIZZA_TRAIT_INDEX,
 			'type' => 'toppings',
 		];
 		$params['body']['query']['bool']['must'][]['term']['categories.name'] = 'meat';
@@ -114,6 +144,14 @@ class PizzaTraitTest extends \PHPUnit_Framework_TestCase {
 				$this->fixture['store']['toppings'][0],
 			],
 			array_column($results['hits']['hits'], '_source')
+		);
+	}
+
+	public function testSettings() {
+		$settings = $this->getElasticSearchConnector()->getConnection()->indices()->getSettings(array('index' => static::PIZZA_TRAIT_INDEX))['store']['settings']['index'];
+		$this->assertEquals(
+			$this->settings[static::PIZZA_TRAIT_INDEX]['analysis'],
+			$settings['analysis']
 		);
 	}
 }
