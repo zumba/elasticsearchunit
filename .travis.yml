@@ -1,12 +1,16 @@
+sudo: required
+dist: precise
+
 language: php
 php:
   - 5.5
-  - 5.6
+  - 7
 
-services:
-  - elasticsearch
+before_install:
+  - curl -O https://download.elasticsearch.org/elasticsearch/release/org/elasticsearch/distribution/deb/elasticsearch/2.2.0/elasticsearch-2.2.0.deb && sudo dpkg -i --force-confnew elasticsearch-2.2.0.deb
+  - sudo service elasticsearch start
 
-before_script:
+install:
   - composer install --dev
 
 script: ./bin/phpunit --coverage-text
