@@ -5,13 +5,12 @@ ElasticSearchUnit is a PHPUnit extension for test cases that utilize the officia
 ## Requirements
 
 * PHP 5.4+
-* PHPUnit ~4.0
-* ElasticSearch ~1.0
+* ElasticSearch 1.7+
 
 ## Testing
 
 1. Install dependencies `composer install -dev`
-1. Run `./bin/phpunit`
+2. Run `./bin/phpunit`
 
 ## Example use
 
@@ -60,6 +59,14 @@ class MyElasticSearchTestCase extends \PHPUnit_Framework_TestCase {
 ```
 
 [See full working example.](https://github.com/zumba/elasticsearchunit/blob/master/examples/PizzaTraitTest.php)
+
+## Testing with Docker/VM etc
+
+If Elasticsearch is not running on localhost, you can provide the hostname of your Elasticsearch instance via environment variables:
+
+```bash
+ES_TEST_HOST=http://docker:9200 ./bin/phpunit
+```
 
 ## Note about PHPUnit Versions
 
