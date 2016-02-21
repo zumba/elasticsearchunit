@@ -159,13 +159,10 @@ class DataSet {
 					if ($retries == static::MAX_RETRY) {
 						throw new \RuntimeException("Indexing time out for Elastic Search Fixture");
 					}
-					$response = $this->connection->getConnection()->indices()->status(compact('index'));
-					if (!isset($response['indices'][$index]['docs']['num_docs'])) {
-						break;
-					}
+					$response = $this->connection->getConnection()->indices()->stats(compact('index'));
 					$retries++;
 					usleep(100000);
-				} while ($response['indices'][$index]['docs']['num_docs'] != $documents[$index]);
+				} while ($response['indices'][$index]['total']['docs']['count'] != $documents[$index]);
 			}
 		}
 
