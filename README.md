@@ -68,6 +68,10 @@ If Elasticsearch is not running on localhost, you can provide the hostname of yo
 ES_TEST_HOST=http://docker:9200 ./bin/phpunit
 ```
 
+## Elasticsearch Version Support
+
+We are actively Elasticsearch 2.x, however we will support 1.x as best effort.
+
 ## Note about PHPUnit Versions
 
 It currently is supporting PHPUnit 4 `@before` and `@after` but can be used in PHPUnit ~3.7 by either aliasing the `elasticSearchSetUp` and `elasticSearchTearDown` to `setUp` and `tearDown`, or by calling `elasticSearchSetUp` and `elasticSearchTearDown` in your respective methods.
