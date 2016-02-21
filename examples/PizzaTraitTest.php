@@ -97,7 +97,11 @@ class PizzaTraitTest extends \PHPUnit_Framework_TestCase {
 
 	public function getElasticSearchConnector() {
 		if (empty($this->connection)) {
-			$this->connection = new \Zumba\PHPUnit\Extensions\ElasticSearch\Client\Connector(new \Elasticsearch\Client());
+			$clientBuilder = \Elasticsearch\ClientBuilder::create();
+			if (getenv('ES_TEST_HOST')) {
+				$clientBuilder->setHosts([getenv('ES_TEST_HOST')]);
+			}
+			$this->connection = new \Zumba\PHPUnit\Extensions\ElasticSearch\Client\Connector($clientBuilder->build());
 		}
 		return $this->connection;
 	}
