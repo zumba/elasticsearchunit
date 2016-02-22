@@ -5,7 +5,11 @@ use Zumba\PHPUnit\Extensions\ElasticSearch\Client\Connector;
 class ConnectorTest extends \PHPUnit_Framework_TestCase {
 
 	public function testGeneralConnection() {
-		$connector = new Connector(new \Elasticsearch\Client());
+		$clientBuilder = \Elasticsearch\ClientBuilder::create();
+		if (getenv('ES_TEST_HOST')) {
+			$clientBuilder->setHosts([getenv('ES_TEST_HOST')]);
+		}
+		$connector = new Connector($clientBuilder->build());
 		$this->assertInstanceOf('Zumba\PHPUnit\Extensions\ElasticSearch\Client\Connector', $connector);
 		$connection = $connector->getConnection();
 		$response = $connection->index([
