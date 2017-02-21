@@ -4,12 +4,12 @@ ElasticSearchUnit is a PHPUnit extension for test cases that utilize the officia
 
 ## Requirements
 
-* PHP 5.4+
-* ElasticSearch 1.7+
+* PHP 5.6+
+* ElasticSearch 5.0+
 
 ## Testing
 
-1. Install dependencies `composer install -dev`
+1. Install dependencies `composer install`
 2. Run `./bin/phpunit`
 
 ## Example use
@@ -70,8 +70,5 @@ ES_TEST_HOST=http://docker:9200 ./bin/phpunit
 
 ## Elasticsearch Version Support
 
-We are actively Elasticsearch 2.x, however we will support 1.x as best effort.
-
-## Note about PHPUnit Versions
-
-It currently is supporting PHPUnit 4 `@before` and `@after` but can be used in PHPUnit ~3.7 by either aliasing the `elasticSearchSetUp` and `elasticSearchTearDown` to `setUp` and `tearDown`, or by calling `elasticSearchSetUp` and `elasticSearchTearDown` in your respective methods.
+This branch/version is compatible with ElasticSearch 5+. If you are using older versions of ElasticSearch,
+please check the v1.x from this library.
