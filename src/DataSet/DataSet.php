@@ -108,7 +108,6 @@ class DataSet {
 	 * @return \Zumba\PHPUnit\Extensions\ElasticSearch\DataSet\DataSet
 	 */
 	public function buildIndices() {
-		$verify = [];
 		foreach ($this->fixture as $index => $types) {
 
 			if (!$this->connection->getConnection()->indices()->exists(compact('index'))) {
@@ -140,13 +139,7 @@ class DataSet {
 					];
 					$params['body'][] = $entry;
 				}
-				$response = $this->connection->getConnection()->bulk($params);
-				if (!empty($response['items'])) {
-					if (!isset($verify[$index])) {
-						$verify[$index] = 0;
-					}
-					$verify[$index] += count($response['items']);
-				}
+				$this->connection->getConnection()->bulk($params);
 			}
 		}
 
