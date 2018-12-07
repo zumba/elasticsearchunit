@@ -1,11 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "hash": "d26ff4f1c020484b7bac1638b48921cc",
-    "content-hash": "86eb62b7f2e8e708530dcd71bf0eb20b",
+    "content-hash": "9efc94666dda988e465d05b3a92a1346",
     "packages": [],
     "packages-dev": [
         {
@@ -60,34 +59,35 @@
                 "constructor",
                 "instantiate"
             ],
-            "time": "2015-06-14 21:17:01"
+            "time": "2015-06-14T21:17:01+00:00"
         },
         {
             "name": "elasticsearch/elasticsearch",
-            "version": "v2.1.4",
+            "version": "v5.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/elastic/elasticsearch-php.git",
-                "reference": "add7f77f8e388d7d24df6d204c0be16bbb6c57c4"
+                "reference": "4b29a4121e790bbfe690d5ee77da348b62d48eb8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/elastic/elasticsearch-php/zipball/add7f77f8e388d7d24df6d204c0be16bbb6c57c4",
-                "reference": "add7f77f8e388d7d24df6d204c0be16bbb6c57c4",
+                "url": "https://api.github.com/repos/elastic/elasticsearch-php/zipball/4b29a4121e790bbfe690d5ee77da348b62d48eb8",
+                "reference": "4b29a4121e790bbfe690d5ee77da348b62d48eb8",
                 "shasum": ""
             },
             "require": {
                 "guzzlehttp/ringphp": "~1.0",
-                "php": ">=5.4",
+                "php": "^5.6|^7.0",
                 "psr/log": "~1.0"
             },
             "require-dev": {
-                "athletic/athletic": "~0.1",
                 "cpliakas/git-wrapper": "~1.0",
+                "doctrine/inflector": "^1.1",
                 "mockery/mockery": "0.9.4",
-                "phpunit/phpunit": "~4.7",
-                "symfony/yaml": "2.4.3 as 2.4.2",
-                "twig/twig": "1.*"
+                "phpunit/phpunit": "^4.7|^5.4",
+                "sami/sami": "~3.2",
+                "symfony/finder": "^2.8",
+                "symfony/yaml": "^2.8"
             },
             "suggest": {
                 "ext-curl": "*",
@@ -101,7 +101,7 @@
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "Apache 2"
+                "Apache-2.0"
             ],
             "authors": [
                 {
@@ -114,7 +114,7 @@
                 "elasticsearch",
                 "search"
             ],
-            "time": "2016-01-08 22:58:44"
+            "time": "2017-11-08T17:04:47+00:00"
         },
         {
             "name": "guzzlehttp/ringphp",
@@ -165,7 +165,7 @@
                 }
             ],
             "description": "Provides a simple API and specification that abstracts away the details of HTTP into a single PHP function.",
-            "time": "2015-05-20 03:37:09"
+            "time": "2015-05-20T03:37:09+00:00"
         },
         {
             "name": "guzzlehttp/streams",
@@ -215,7 +215,7 @@
                 "Guzzle",
                 "stream"
             ],
-            "time": "2014-10-12 19:18:40"
+            "time": "2014-10-12T19:18:40+00:00"
         },
         {
             "name": "phpdocumentor/reflection-docblock",
@@ -264,7 +264,7 @@
                     "email": "mike.vanriel@naenius.com"
                 }
             ],
-            "time": "2015-02-03 12:10:50"
+            "time": "2015-02-03T12:10:50+00:00"
         },
         {
             "name": "phpspec/prophecy",
@@ -326,7 +326,7 @@
                 "spy",
                 "stub"
             ],
-            "time": "2016-02-15 07:46:21"
+            "time": "2016-02-15T07:46:21+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -388,7 +388,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2015-10-06 15:47:00"
+            "time": "2015-10-06T15:47:00+00:00"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -435,7 +435,7 @@
                 "filesystem",
                 "iterator"
             ],
-            "time": "2015-06-21 13:08:43"
+            "time": "2015-06-21T13:08:43+00:00"
         },
         {
             "name": "phpunit/php-text-template",
@@ -476,7 +476,7 @@
             "keywords": [
                 "template"
             ],
-            "time": "2015-06-21 13:50:34"
+            "time": "2015-06-21T13:50:34+00:00"
         },
         {
             "name": "phpunit/php-timer",
@@ -517,7 +517,7 @@
             "keywords": [
                 "timer"
             ],
-            "time": "2015-06-21 08:01:12"
+            "time": "2015-06-21T08:01:12+00:00"
         },
         {
             "name": "phpunit/php-token-stream",
@@ -566,7 +566,7 @@
             "keywords": [
                 "tokenizer"
             ],
-            "time": "2015-09-15 10:49:45"
+            "time": "2015-09-15T10:49:45+00:00"
         },
         {
             "name": "phpunit/phpunit",
@@ -638,7 +638,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2016-02-11 14:56:33"
+            "time": "2016-02-11T14:56:33+00:00"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
@@ -694,7 +694,7 @@
                 "mock",
                 "xunit"
             ],
-            "time": "2015-10-02 06:51:40"
+            "time": "2015-10-02T06:51:40+00:00"
         },
         {
             "name": "psr/log",
@@ -732,7 +732,7 @@
                 "psr",
                 "psr-3"
             ],
-            "time": "2012-12-21 11:40:51"
+            "time": "2012-12-21T11:40:51+00:00"
         },
         {
             "name": "react/promise",
@@ -776,7 +776,7 @@
                 }
             ],
             "description": "A lightweight implementation of CommonJS Promises/A for PHP",
-            "time": "2015-07-03 13:48:55"
+            "time": "2015-07-03T13:48:55+00:00"
         },
         {
             "name": "sebastian/comparator",
@@ -840,7 +840,7 @@
                 "compare",
                 "equality"
             ],
-            "time": "2015-07-26 15:48:44"
+            "time": "2015-07-26T15:48:44+00:00"
         },
         {
             "name": "sebastian/diff",
@@ -892,7 +892,7 @@
             "keywords": [
                 "diff"
             ],
-            "time": "2015-12-08 07:14:41"
+            "time": "2015-12-08T07:14:41+00:00"
         },
         {
             "name": "sebastian/environment",
@@ -942,7 +942,7 @@
                 "environment",
                 "hhvm"
             ],
-            "time": "2015-12-02 08:37:27"
+            "time": "2015-12-02T08:37:27+00:00"
         },
         {
             "name": "sebastian/exporter",
@@ -1008,7 +1008,7 @@
                 "export",
                 "exporter"
             ],
-            "time": "2015-06-21 07:55:53"
+            "time": "2015-06-21T07:55:53+00:00"
         },
         {
             "name": "sebastian/global-state",
@@ -1059,7 +1059,7 @@
             "keywords": [
                 "global state"
             ],
-            "time": "2015-10-12 03:26:01"
+            "time": "2015-10-12T03:26:01+00:00"
         },
         {
             "name": "sebastian/recursion-context",
@@ -1112,7 +1112,7 @@
             ],
             "description": "Provides functionality to recursively process PHP variables",
             "homepage": "http://www.github.com/sebastianbergmann/recursion-context",
-            "time": "2015-11-11 19:50:13"
+            "time": "2015-11-11T19:50:13+00:00"
         },
         {
             "name": "sebastian/version",
@@ -1147,7 +1147,7 @@
             ],
             "description": "Library that helps with managing the version number of Git-hosted PHP projects",
             "homepage": "https://github.com/sebastianbergmann/version",
-            "time": "2015-06-21 13:59:46"
+            "time": "2015-06-21T13:59:46+00:00"
         },
         {
             "name": "symfony/yaml",
@@ -1196,7 +1196,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2016-02-02 13:44:19"
+            "time": "2016-02-02T13:44:19+00:00"
         }
     ],
     "aliases": [],

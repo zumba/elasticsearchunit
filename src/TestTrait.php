@@ -30,14 +30,14 @@ trait TestTrait {
 	/**
 	 * Retrieve a Elastic Search connection client.
 	 *
-	 * @return Zumba\PHPUnit\Extensions\ElasticSearch\Client\Connector
+	 * @return \Zumba\PHPUnit\Extensions\ElasticSearch\Client\Connector
 	 */
 	protected abstract function getElasticSearchConnector();
 
 	/**
 	 * Retrieve a dataset object.
 	 *
-	 * @return Zumba\PHPUnit\Extensions\ElasticSearch\DataSet\DataSet
+	 * @return \Zumba\PHPUnit\Extensions\ElasticSearch\DataSet\DataSet
 	 */
 	protected abstract function getElasticSearchDataSet();
 
