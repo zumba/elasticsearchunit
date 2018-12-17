@@ -12,11 +12,13 @@ class ConnectorTest extends \PHPUnit_Framework_TestCase {
 		$connector = new Connector($clientBuilder->build());
 		$this->assertInstanceOf('Zumba\PHPUnit\Extensions\ElasticSearch\Client\Connector', $connector);
 		$connection = $connector->getConnection();
+
+		$this->deleteIfPresent($connection);
 		$response = $connection->index([
 			'index' => 'testing',
 			'type' => 'test',
 			'id' => 1,
-			'body' => ['testfield' => 'testvalue']
+			'body' => ['testfield' => 'testvalue'],
 		]);
 		$this->assertTrue($response['created']);
 		$this->assertEquals(1, $response['_id']);
@@ -27,6 +29,20 @@ class ConnectorTest extends \PHPUnit_Framework_TestCase {
 			'id' => 1
 		]);
 		$this->assertTrue($response['found']);
+	}
+	
+	private function deleteIfPresent($connection) {
+		try {
+			$response = $connection->delete([
+				'index' => 'testing',
+				'type' => 'test',
+				'id' => 1
+			]);
+
+			return $response;
+		} catch (\Exception $e) {
+			// ignore
+		}
 	}
 
 }
