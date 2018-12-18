@@ -137,7 +137,7 @@ class PizzaTraitTest extends \PHPUnit_Framework_TestCase {
 		$params['body']['query']['bool']['must'][]['term']['categories.name'] = 'meat';
 		$params['body']['sort']['categories.display_order'] = [
 			'order' => 'asc',
-			'nested_filter' => [['term' => ['categories.name' => 'meat']]]
+			'nested_filter' => ['term' => ['categories.name' => 'meat']]
 		];
 		$results = $this->getElasticSearchConnector()->getConnection()->search($params);
 		$this->assertEquals(3, $results['hits']['total']);

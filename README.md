@@ -27,7 +27,8 @@ class MyElasticSearchTestCase extends \PHPUnit_Framework_TestCase {
 	 */
 	public function getElasticSearchConnector() {
 		if (empty($this->connection)) {
-			$this->connection = new \Zumba\PHPUnit\Extensions\ElasticSearch\Client\Connector(new \Elasticsearch\Client());
+			$clientBuilder = new \Elasticsearch\ClientBuilder();
+			$this->connection = new \Zumba\PHPUnit\Extensions\ElasticSearch\Client\Connector($clientBuilder->build());
 		}
 		return $this->connection;
 	}
@@ -70,7 +71,9 @@ ES_TEST_HOST=http://docker:9200 ./bin/phpunit
 
 ## Elasticsearch Version Support
 
-We are actively Elasticsearch 2.x, however we will support 1.x as best effort.
+For Elasticsearch 5.x and greater, use version 2.x.
+
+For Elasticsearch 2.x/1.x, use the version 1.x.
 
 ## Note about PHPUnit Versions
 

@@ -40,14 +40,14 @@ class DataSet {
 	/**
 	 * Connection object.
 	 *
-	 * @var Zumba\PHPUnit\Extensions\ElasticSearch\Client\Connector
+	 * @var \Zumba\PHPUnit\Extensions\ElasticSearch\Client\Connector
 	 */
 	protected $connection;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param Zumba\PHPUnit\Extensions\ElasticSearch\Client\Connector
+	 * @param \Zumba\PHPUnit\Extensions\ElasticSearch\Client\Connector
 	 */
 	public function __construct(Connector $connection) {
 		$this->connection = $connection;
@@ -59,7 +59,7 @@ class DataSet {
 	 * see $this->fixture
 	 *
 	 * @param array $data
-	 * @return Zumba\PHPUnit\Extensions\ElasticSearch\DataSet\DataSet
+	 * @return \Zumba\PHPUnit\Extensions\ElasticSearch\DataSet\DataSet
 	 */
 	public function setFixture(array $data) {
 		$this->fixture = $data;
@@ -70,7 +70,7 @@ class DataSet {
 	 * Sets up the fixture mappings
 	 *
 	 * @param array $mappings
-	 * @return Zumba\PHPUnit\Extensions\ElasticSearch\DataSet\DataSet
+	 * @return \Zumba\PHPUnit\Extensions\ElasticSearch\DataSet\DataSet
 	 */
 	public function setMappings(array $mappings) {
 		$this->mappings = $mappings;
@@ -81,7 +81,7 @@ class DataSet {
 	 * Sets up the fixture settings
 	 *
 	 * @param array $settings
-	 * @return Zumba\PHPUnit\Extensions\ElasticSearch\DataSet\DataSet
+	 * @return \Zumba\PHPUnit\Extensions\ElasticSearch\DataSet\DataSet
 	 */
 	public function setSettings(array $settings) {
 		$this->settings = $settings;
@@ -91,7 +91,7 @@ class DataSet {
 	/**
 	 * Delete all indices specified in the fixture keys.
 	 *
-	 * @return Zumba\PHPUnit\Extensions\ElasticSearch\DataSet\DataSet
+	 * @return \Zumba\PHPUnit\Extensions\ElasticSearch\DataSet\DataSet
 	 */
 	public function deleteIndices() {
 		foreach (array_keys($this->fixture) as $index) {
@@ -105,10 +105,9 @@ class DataSet {
 	/**
 	 * Creates all types with data from the fixture.
 	 *
-	 * @return Zumba\PHPUnit\Extensions\ElasticSearch\DataSet\DataSet
+	 * @return \Zumba\PHPUnit\Extensions\ElasticSearch\DataSet\DataSet
 	 */
 	public function buildIndices() {
-		$verify = [];
 		foreach ($this->fixture as $index => $types) {
 
 			if (!$this->connection->getConnection()->indices()->exists(compact('index'))) {
@@ -129,7 +128,8 @@ class DataSet {
 				$params = [
 					'index' => $index,
 					'type' => $type,
-					'body' => []
+					'body' => [],
+					'refresh' => true, //ensure that data has been indexed before you can use it
 				];
 				foreach ($data as $key => $entry) {
 					$params['body'][] = [
@@ -139,30 +139,7 @@ class DataSet {
 					];
 					$params['body'][] = $entry;
 				}
-				$response = $this->connection->getConnection()->bulk($params);
-				if (!empty($response['items'])) {
-					if (!isset($verify[$index])) {
-						$verify[$index] = 0;
-					}
-					$verify[$index] += count($response['items']);
-				}
-			}
-		}
-		//ensure that data has been indexed before you can use it
-		if (!empty($verify)) {
-			foreach ($verify as $index => $count) {
-				if (empty($count)) {
-					continue;
-				}
-				$retries = 1;
-				do {
-					if ($retries == static::MAX_RETRY) {
-						throw new \RuntimeException("Indexing time out for Elastic Search Fixture");
-					}
-					$response = $this->connection->getConnection()->indices()->stats(compact('index'));
-					$retries++;
-					usleep(100000);
-				} while ($response['indices'][$index]['total']['docs']['count'] != $documents[$index]);
+				$this->connection->getConnection()->bulk($params);
 			}
 		}
 
